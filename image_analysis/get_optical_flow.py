@@ -2,8 +2,6 @@ import optical_flow as op
 import os
 from natsort import natsorted
 
-#rootpathlist=['images/Illusions','images/Painting_Modern','images/Painting_Realistic','images/Photo_Movable','images/Photo_Still']
-#rootpathlist=['images/one_color','images/two_color']
 rootpathlist=['images']
 size=[160,120]
 center = None#[(size[0] - 1) / 2, (size[1] - 1) / 2]
