@@ -20,7 +20,7 @@ def unit_vec(unitvec,vec,per=0):
 
     norm = unitvec[0] * vec[0] + unitvec[1] * vec[1]
     vecnorm = np.sqrt(np.sum(np.abs(vec**2)))
-    if norm/vecnorm<per:
+    if np.abs(norm)/vecnorm<per:
         norm=0
 
     return norm
