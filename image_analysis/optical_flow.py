@@ -16,6 +16,15 @@ def supsum(data):
         if d < 0: sum += d
     return sum
 
+def unit_vec(unitvec,vec,per=0):
+
+    norm = unitvec[0] * vec[0] + unitvec[1] * vec[1]
+    vecnorm = np.sqrt(np.sum(np.abs(vec**2)))
+    if norm/vecnorm<per:
+        norm=0
+
+    return norm
+
 def detect_rotmo(o,op,vec):#dimension of o and op must be 2
     #fix Inverted y axis for cv2 to correct axis
     o   = [  o[0], -   o[1]]
@@ -81,7 +90,7 @@ def save_flow_data(data, ofabs, root, met):
         writer = csv.writer(f, lineterminator='\n')
         writer.writerows(data)
 
-def lucas_kanade(img1, img2, dtct_rm=None, unitvec=None):
+def lucas_kanade(img1, img2, dtct_rm=None, unitvec=None,per=None):
     window_size= 50
     quality_level= 0.3
 
@@ -113,7 +122,7 @@ def lucas_kanade(img1, img2, dtct_rm=None, unitvec=None):
             if dtct_rm:
                 norm=detect_rotmo(dtct_rm,[c,d],[dx,dy])
             elif unitvec is not None:
-                norm=unitvec[0]*dx + unitvec[1]*dy
+                norm=unit_vec(unitvec, [dx,dy], per=per)
             else:
                 norm=np.sqrt(dx**2+dy**2)
             data.append([c, d, dx, dy,norm])
@@ -124,7 +133,7 @@ def lucas_kanade(img1, img2, dtct_rm=None, unitvec=None):
     except:
         return None,None
 
-def farneback(img1, img2, dtct_rm=None, unitvec=None):
+def farneback(img1, img2, dtct_rm=None, unitvec=None, per=None):
     window_size= 10
     stride= 5
     min_vec= 0.01
@@ -143,7 +152,7 @@ def farneback(img1, img2, dtct_rm=None, unitvec=None):
                 if dtct_rm is not None:
                     norm=detect_rotmo(dtct_rm,[x,y],[dx,dy])
                 elif unitvec is not None:
-                    norm=unitvec[0]*dx + unitvec[1]*dy
+                    norm=unit_vec(unitvec, [dx,dy], per=per)
                 else:
                     norm=np.sqrt(dx**2+dy**2)
                 data.append([x, y, dx, dy, norm])
@@ -152,17 +161,17 @@ def farneback(img1, img2, dtct_rm=None, unitvec=None):
     except:
         return None,None
 
-def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=1,l=2, dtct_rm=False, unitvec=False):
+def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=1,l=2, dtct_rm=False, unitvec=False, per=False):
     img1 = cv2.imread(os.path.join(root,file1))
     img2 = cv2.imread(os.path.join(root,file2))
     img1_gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
     img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
     if met=='lk':
-        data,ofabs=lucas_kanade(img1_gray, img2_gray, dtct_rm, unitvec)
+        data,ofabs=lucas_kanade(img1_gray, img2_gray, dtct_rm, unitvec,per)
         if vs is None: vs=50
     elif met=='fb':
-        data,ofabs=farneback(img1_gray, img2_gray, dtct_rm, unitvec)
+        data,ofabs=farneback(img1_gray, img2_gray, dtct_rm, unitvec,per)
         if vs is None: vs=4
     if data is None or ofabs is None:
         stdata=np.array([0,0,0,0,0,0,0,0])
