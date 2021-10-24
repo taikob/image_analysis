@@ -17,8 +17,8 @@ def supsum(data):
     return sum
 
 def unit_vec(unitvec,vec,per=0):
-
     norm = unitvec[0] * vec[0] + unitvec[1] * vec[1]
+    vec=np.array(vec)
     vecnorm = np.sqrt(np.sum(np.abs(vec**2)))
     if np.abs(norm)/vecnorm<per:
         norm=0
@@ -115,16 +115,18 @@ def lucas_kanade(img1, img2, dtct_rm=None, unitvec=None,per=None):
         data = []
         ofabs=np.ndarray(0)
         for i, (new, old) in enumerate(zip(good_new, good_old)):
+
             a, b = new.ravel()
             c, d = old.ravel()
             dx = a - c
             dy = b - d
             if dtct_rm:
                 norm=detect_rotmo(dtct_rm,[c,d],[dx,dy])
-            elif unitvec is not None:
+            elif unitvec:
                 norm=unit_vec(unitvec, [dx,dy], per=per)
             else:
                 norm=np.sqrt(dx**2+dy**2)
+
             data.append([c, d, dx, dy,norm])
             if norm==0: continue
             else: ofabs = np.append(ofabs, norm)
@@ -149,9 +151,9 @@ def farneback(img1, img2, dtct_rm=None, unitvec=None, per=None):
                                       range(0, height, stride)):
             if np.linalg.norm(flow[y, x]) >= min_vec:
                 dx, dy = flow[y, x].astype(float)
-                if dtct_rm is not None:
+                if dtct_rm:
                     norm=detect_rotmo(dtct_rm,[x,y],[dx,dy])
-                elif unitvec is not None:
+                elif unitvec:
                     norm=unit_vec(unitvec, [dx,dy], per=per)
                 else:
                     norm=np.sqrt(dx**2+dy**2)
