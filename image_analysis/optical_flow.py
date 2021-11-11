@@ -19,7 +19,8 @@ def supsum(data):
 def unit_vec(unitvec,vec,per=0):
     norm = unitvec[0] * vec[0] + unitvec[1] * vec[1]
     vec=np.array(vec)
-    vecnorm = np.sqrt(np.sum(np.abs(vec**2)))
+    vecnorm = np.sqrt(np.sum(np.abs(vec**2))) * np.sqrt(np.sum(np.abs(unitvec**2)))
+
     if np.abs(norm)/vecnorm<per:
         norm=0
 
