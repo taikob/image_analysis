@@ -62,13 +62,13 @@ def save_flow_image(root, img, data, vs, met, cc = 'yellow', lc = 'red', s = 1, 
         dy = para[3] * vs
         norm = para[4]
         if norm == 0:
-            cv2.line(mask, (c, d), (int(c + dx), int(d + dy)), colormap['green'], l)
-            cv2.line(img , (c, d), (int(c + dx), int(d + dy)), colormap['green'], l)
+            cv2.line(mask, (int(c), int(d)), (int(c + dx), int(d + dy)), colormap['green'], l)
+            cv2.line(img , (int(c), int(d)), (int(c + dx), int(d + dy)), colormap['green'], l)
         else:
-            cv2.line(mask, (c, d), (int(c + dx), int(d + dy)), colormap[lc], l)
-            cv2.line(img , (c, d), (int(c + dx), int(d + dy)), colormap[lc], l)
-        cv2.circle(mask, (c, d), s, colormap[cc], -1)
-        cv2.circle(img , (c, d), s, colormap[cc], -1)
+            cv2.line(mask, (int(c), int(d)), (int(c + dx), int(d + dy)), colormap[lc], l)
+            cv2.line(img , (int(c), int(d)), (int(c + dx), int(d + dy)), colormap[lc], l)
+        cv2.circle(mask, (int(c), int(d)), s, colormap[cc], -1)
+        cv2.circle(img , (int(c), int(d)), s, colormap[cc], -1)
 
     cv2.imwrite(os.path.join(root, 'vectors_' + met + '.jpg'), mask)
     cv2.imwrite(os.path.join(root, 'result_' + met + '.jpg'), img)
