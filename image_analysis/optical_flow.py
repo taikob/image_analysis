@@ -177,7 +177,7 @@ def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=
         data,ofabs=farneback(img1_gray, img2_gray, dtct_rm, unitvec,per)
         if vs is None: vs=4
     if data is None or ofabs is None:
-        stdata=np.array([0,0,0,0,0,0,0,0])
+        stdata=np.array([0,0,0,0,0,0,0,0,0])
         np.savetxt(os.path.join(root,'statdata_'+met+'.csv'),stdata)
     else:
         save_flow_image(root, img1, data, vs, met, cc, lc, s, l)
