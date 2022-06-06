@@ -82,9 +82,9 @@ def save_flow_data(data, ofabs, root, met):
         avesup = supsum(ofabs) / np.count_nonzero(ofabs < 0)
     else:
         avesup = 0
-    stdata = np.array([actsum(ofabs), aveact, np.count_nonzero(ofabs > 0),
+    stdata = np.array([[actsum(ofabs), aveact, np.count_nonzero(ofabs > 0),
                        supsum(ofabs), avesup, np.count_nonzero(ofabs < 0),
-                       ofabs.sum(), ofabs.mean(), len(ofabs)])
+                       ofabs.sum(), ofabs.mean(), len(ofabs)]])
 
     np.savetxt(os.path.join(root, 'statdata_'+ met+'.csv'), stdata)
     with open(os.path.join(root, 'data_' + met + '.csv'), 'w') as f:
@@ -177,7 +177,7 @@ def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=
         data,ofabs=farneback(img1_gray, img2_gray, dtct_rm, unitvec,per)
         if vs is None: vs=4
     if data is None or ofabs is None:
-        stdata=np.array([0,0,0,0,0,0,0,0,0])
+        stdata=np.array([[0,0,0,0,0,0,0,0,0]])
         np.savetxt(os.path.join(root,'statdata_'+met+'.csv'),stdata)
     else:
         save_flow_image(root, img1, data, vs, met, cc, lc, s, l)
