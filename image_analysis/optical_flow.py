@@ -57,9 +57,9 @@ def detect_rotmo(o,op,vec,rd=None):#dimension of o and op must be 2,o: origin, o
     if rd is not None and r>rd: return 0
 
     if r !=0 and norm < r:
-        rotval=(vec[0]*opo[1] - vec[1]*opo[0]) /(r*r)
+        rotval=(vec[0]*opo[1] - vec[1]*opo[0]) /r
         if abs(rotval)/norm>=np.sqrt(2)/2:
-            return rotval
+            return rotval/r
         else: return 0
     else: return 0
 
