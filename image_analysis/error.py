@@ -21,8 +21,7 @@ def error(path, cmppath,cmp = None,savepath=None,size=None):
     erR = np.average(np.abs(er[:, :, 2] ** 2))
     erdev = np.std(np.array([erR, erG, erB]))
     if savepath is not None:
-        if os.path.exists(savepath):
-            os.makedirs(savepath)
+        if not os.path.exists(savepath): os.makedirs(savepath)
         np.savetxt(savepath + '/error.csv', np.array([[erA, erR, erG, erB, erdev]]), delimiter=',')
     else: np.savetxt('error.csv', np.array([[erA, erR, erG, erB, erdev]]), delimiter=',')
 
