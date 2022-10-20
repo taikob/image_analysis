@@ -35,7 +35,7 @@ def unit_vec(unitvec,vec,irt=0):
 
     return val
 
-def detect_rotmo(o,op,vec,rd=None,ig=None):#dimension of o and op must be 2,o: origin, op: position from origin, rd: radius of circle, ig: ignore excluding
+def detect_rotmo(o,op,vec,ord=None,ird=None,ig=None):#dimension of o and op must be 2,o: origin, op: position from origin, ord: outer radius of circle, ird: inner radius of circle, ig: ignore excluding
     #fix Inverted y axis for cv2 to correct axis
     o   = [  o[0], -   o[1]]
     op  = [ op[0], -  op[1]]
@@ -54,7 +54,8 @@ def detect_rotmo(o,op,vec,rd=None,ig=None):#dimension of o and op must be 2,o: o
     r   =np.sqrt(r)
     norm=np.sqrt(norm)
 
-    if rd is not None and r>rd: return 0
+    if ord is not None and r>ord: return 0
+    if ird is not None and r<ird: return 0
 
     if r !=0 and norm < r:
         rotval=(vec[0]*opo[1] - vec[1]*opo[0]) /r
@@ -95,7 +96,7 @@ def save_flow_data(data, ofabs, root, met):
         writer = csv.writer(f, lineterminator='\n')
         writer.writerows(data)
 
-def lucas_kanade(img1, img2, cnt=None, nvec=None, irt=None, rd=None, ig=None):
+def lucas_kanade(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, ig=None):
     window_size= 50
     quality_level= 0.3
 
@@ -121,7 +122,7 @@ def lucas_kanade(img1, img2, cnt=None, nvec=None, irt=None, rd=None, ig=None):
             a, b = new.ravel()
             c, d = old.ravel()
             dx = a - c; dy = b - d
-            if    cnt: val = detect_rotmo(cnt,[c,d],[dx,dy],rd=rd,ig=ig)
+            if    cnt: val = detect_rotmo(cnt,[c,d],[dx,dy],ord=ord,ird=ird,ig=ig)
             elif nvec: val = unit_vec(nvec, [dx,dy], irt=irt)
             else:      val = np.sqrt(dx**2+dy**2)
 
@@ -133,7 +134,7 @@ def lucas_kanade(img1, img2, cnt=None, nvec=None, irt=None, rd=None, ig=None):
     except:
         return None,None
 
-def farneback(img1, img2, cnt=None, nvec=None, irt=None, rd=None, ig=None):
+def farneback(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, ig=None):
     window_size= 10
     stride= 5
     min_vec= 0.01
@@ -148,7 +149,7 @@ def farneback(img1, img2, cnt=None, nvec=None, irt=None, rd=None, ig=None):
                                       range(0, height, stride)):
             if np.linalg.norm(flow[y, x]) >= min_vec:
                 dx, dy = flow[y, x].astype(float)
-                if    cnt: val = detect_rotmo(cnt,[x,y],[dx,dy],rd=rd,ig=ig)
+                if    cnt: val = detect_rotmo(cnt,[x,y],[dx,dy],ord=ord,ird=ird,ig=ig)
                 elif nvec: val = unit_vec(nvec, [dx,dy], irt=irt)
                 else:      val = np.sqrt(dx**2+dy**2)
                 data.append([x, y, dx, dy, val])
@@ -157,7 +158,7 @@ def farneback(img1, img2, cnt=None, nvec=None, irt=None, rd=None, ig=None):
     except:
         return None,None
 
-def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=1,l=2, cnt=False, nvec=False, irt=False, rd=False, ig=False):
+def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=1,l=2, cnt=False, nvec=False, irt=False, ord=False, ird=False, ig=False):
     #cnt: center of circle, nvec: unit vector, irt: ignore rate, rd: radius
     img1 = cv2.imread(os.path.join(root,file1))
     img2 = cv2.imread(os.path.join(root,file2))
@@ -165,10 +166,10 @@ def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=
     img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
     if met=='lk':
-        data, ofabs = lucas_kanade(img1_gray, img2_gray, cnt, nvec,irt,rd,ig)
+        data, ofabs = lucas_kanade(img1_gray, img2_gray, cnt, nvec,irt,ord,ird,ig)
         if vs is None: vs=50
     elif met=='fb':
-        data, ofabs = farneback(img1_gray, img2_gray, cnt, nvec,irt,rd,ig)
+        data, ofabs = farneback(img1_gray, img2_gray, cnt, nvec,irt,ord,ird,ig)
         if vs is None: vs=4
     if data is None or ofabs is None:
         stdata=np.array([[0,0,0,0,0,0,0,0,0]])
