@@ -81,8 +81,8 @@ def save_flow_image(root, img, data, vs, met, cc = 'yellow', lc = 'red', s = 1, 
         cv2.circle(mask, (int(c), int(d)), s, colormap[cc], -1)
         cv2.circle(img , (int(c), int(d)), s, colormap[cc], -1)
 
-    cv2.imwrite(os.path.join(root, 'vectors_' + met + '.jpg'), mask)
-    cv2.imwrite(os.path.join(root, 'result_' + met + '.jpg'), img)
+    cv2.imwrite(os.path.join(root, 'vectors_' + met + '.png'), mask)
+    cv2.imwrite(os.path.join(root, 'result_' + met + '.png'), img)
 
 def save_flow_data(data, ofabs, root, met):
     actsum, actave, actnum = act(ofabs)
