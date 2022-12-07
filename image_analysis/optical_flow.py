@@ -35,11 +35,12 @@ def unit_vec(unitvec,vec,irt=0):
 
     return val
 
-def detect_rotmo(o,op,vec,ord=None,ird=None,ig=None):#dimension of o and op must be 2,o: origin, op: position from origin, ord: outer radius of circle, ird: inner radius of circle, ig: ignore excluding
+def detect_rotmo(o,op,vec,ord=None,ird=None,ig=False):#dimension of o and op must be 2,o: origin, op: position from origin, ord: outer radius of circle, ird: inner radius of circle, ig: ignore excluding
     #fix Inverted y axis for cv2 to correct axis
     o   = [  o[0], -   o[1]]
     op  = [ op[0], -  op[1]]
     vec = [vec[0], - vec[1]]
+    print('Yesss',ord,ird)
 
     opo=np.zeros(len(op))
 
@@ -56,10 +57,11 @@ def detect_rotmo(o,op,vec,ord=None,ird=None,ig=None):#dimension of o and op must
 
     if ord is not None and r>ord: return 0
     if ird is not None and r<ird: return 0
-
+    print(norm,r)
     if r !=0 and norm < r:
+        print('Yes')
         rotval=(vec[0]*opo[1] - vec[1]*opo[0]) /r
-        if abs(rotval)/norm>=np.sqrt(2)/2 or ig is not None:
+        if abs(rotval)/norm>=np.sqrt(2)/2 or ig is not False:
             return rotval/r
         else: return 0
     else: return 0
@@ -96,7 +98,7 @@ def save_flow_data(data, ofabs, root, met):
         writer = csv.writer(f, lineterminator='\n')
         writer.writerows(data)
 
-def lucas_kanade(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, ig=None):
+def lucas_kanade(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, ig=False):
     window_size= 50
     quality_level= 0.3
 
@@ -134,7 +136,7 @@ def lucas_kanade(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, 
     except:
         return None,None
 
-def farneback(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, ig=None):
+def farneback(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, ig=False):
     window_size= 10
     stride= 5
     min_vec= 0.01
@@ -158,7 +160,7 @@ def farneback(img1, img2, cnt=None, nvec=None, irt=None, ord=None, ird=None, ig=
     except:
         return None,None
 
-def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=1,l=2, cnt=False, nvec=False, irt=False, ord=False, ird=False, ig=False):
+def get_optical_flow(root,file1, file2, met='lk',cc='yellow',lc='red',vs=None,s=1,l=2, cnt=False, nvec=False, irt=False, ord=None, ird=None, ig=False):
     #cnt: center of circle, nvec: unit vector, irt: ignore rate, rd: radius
     img1 = cv2.imread(os.path.join(root,file1))
     img2 = cv2.imread(os.path.join(root,file2))
