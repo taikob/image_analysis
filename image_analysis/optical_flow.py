@@ -40,7 +40,6 @@ def detect_rotmo(o,op,vec,ord=None,ird=None,ig=False):#dimension of o and op mus
     o   = [  o[0], -   o[1]]
     op  = [ op[0], -  op[1]]
     vec = [vec[0], - vec[1]]
-    print('Yesss',ord,ird)
 
     opo=np.zeros(len(op))
 
@@ -57,9 +56,7 @@ def detect_rotmo(o,op,vec,ord=None,ird=None,ig=False):#dimension of o and op mus
 
     if ord is not None and r>ord: return 0
     if ird is not None and r<ird: return 0
-    print(norm,r)
     if r !=0 and norm < r:
-        print('Yes')
         rotval=(vec[0]*opo[1] - vec[1]*opo[0]) /r
         if abs(rotval)/norm>=np.sqrt(2)/2 or ig is not False:
             return rotval/r
