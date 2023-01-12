@@ -1,4 +1,4 @@
-import os, cv2, itertools, csv
+import os, cv2, itertools, csv, math
 import numpy as np
 
 colormap = {'blue': [255, 0, 0], 'green': [0, 255, 0], 'red': [0, 0, 255],
@@ -59,7 +59,7 @@ def detect_rotmo(o,op,vec,ord=None,ird=None,ig=False):#dimension of o and op mus
     if r !=0 and norm < r:
         rotval=(vec[0]*opo[1] - vec[1]*opo[0]) /r
         if abs(rotval)/norm>=np.sqrt(2)/2 or ig is not False:
-            return rotval/r
+            return math.degrees(rotval/r)
         else: return 0
     else: return 0
 
